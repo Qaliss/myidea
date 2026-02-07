@@ -12,7 +12,13 @@ load_dotenv()
 
 app = FastAPI(title="MyIdea")
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
+model = None
+
+def get_model():
+    global model
+    if model is None:
+        model = SentenceTransformer("all-MiniLM-L6-v2")
+    return model
 
 url = os.getenv("SUPABASE_URL")
 key = os.getenv("SUPABASE_KEY")
@@ -34,7 +40,7 @@ class PaperResponse(BaseModel):
 @app.post("/analyze_idea", response_model=List[PaperResponse])
 def analyze_idea(request: IdeaRequest):
     # 1️⃣ Embed the idea
-    idea_embedding = model.encode(request.idea).tolist()
+    idea_embedding = get_model().encode(request.idea).tolist()
 
     # 2️⃣ Call Supabase RPC (pgvector similarity)
     response = supabase_client.rpc(
