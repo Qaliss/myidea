@@ -12,7 +12,7 @@ if st.button("Analyze"):
     else:
         with st.spinner("Analyzing..."):
             response = requests.post(
-                "http://127.0.0.1:8000/analyze_idea",
+                "https://myidea-8siz.onrender.com/analyze_idea",
                 json={"idea": idea, "top_k": top_k},
                 timeout=30
             )
