@@ -42,6 +42,6 @@ if st.button("Analyze"):
                 st.write(p["abstract"])
                 st.caption(
                     f"Score: {p['score']:.3f} | "
-                    f"Published: {p['published_date']}"
-                    f"Link: https://arxiv.org/abs/{['arxiv_id']}"
+                    f"Published: {p['published_date']} | "
+                    f"Link: https://arxiv.org/abs/{p['arxiv_id']}"
                 )
