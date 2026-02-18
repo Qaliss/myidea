@@ -2,8 +2,6 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
 import supabase
-from sentence_transformers import SentenceTransformer
-import numpy as np
 import json
 import os
 from dotenv import load_dotenv
@@ -12,21 +10,13 @@ load_dotenv()
 
 app = FastAPI(title="MyIdea")
 
-model = None
-
-def get_model():
-    global model
-    if model is None:
-        model = SentenceTransformer("all-MiniLM-L6-v2")
-    return model
-
 url = os.getenv("SUPABASE_URL")
 key = os.getenv("SUPABASE_KEY")
 
 supabase_client = supabase.create_client(url, key)
 
 class IdeaRequest(BaseModel):
-    idea: str
+    embedding: List[float]
     top_k: int = 10
 
 class PaperResponse(BaseModel):
@@ -39,14 +29,11 @@ class PaperResponse(BaseModel):
 
 @app.post("/analyze_idea", response_model=List[PaperResponse])
 def analyze_idea(request: IdeaRequest):
-    # 1️⃣ Embed the idea
-    idea_embedding = get_model().encode(request.idea).tolist()
 
-    # 2️⃣ Call Supabase RPC (pgvector similarity)
     response = supabase_client.rpc(
         "match_papers",
         {
-            "query_embedding": idea_embedding,
+            "query_embedding": request.embedding,
             "match_count": request.top_k
         }
     ).execute()
@@ -55,6 +42,7 @@ def analyze_idea(request: IdeaRequest):
         return []
 
     return response.data
+
 
 @app.get("/")
 async def root():
