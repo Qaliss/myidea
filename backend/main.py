@@ -55,3 +55,7 @@ def analyze_idea(request: IdeaRequest):
         return []
 
     return response.data
+
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the idea analyzing service"}
