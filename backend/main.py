@@ -25,6 +25,7 @@ class PaperResponse(BaseModel):
     authors: List[str]
     categories: List[str]
     published_date: str
+    arxiv_id: str
     score: float
 
 @app.post("/analyze_idea", response_model=List[PaperResponse])

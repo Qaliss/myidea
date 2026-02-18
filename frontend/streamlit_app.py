@@ -43,4 +43,5 @@ if st.button("Analyze"):
                 st.caption(
                     f"Score: {p['score']:.3f} | "
                     f"Published: {p['published_date']}"
+                    f"Link: {p['arxiv_id']}"
                 )
